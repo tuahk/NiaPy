@@ -3,7 +3,7 @@ from unittest import TestCase
 import NiaPy
 
 
-class MyBenchmark(object):
+class MyBenchmark():
     def __init__(self):
         self.Lower = -11
         self.Upper = 11
@@ -25,5 +25,5 @@ class RunnerTestCase(TestCase):
         self.benchmarks = ['griewank', MyBenchmark()]
 
     def test_runner_works_fine(self):
-        self.assertTrue(NiaPy.Runner(10, 40, 1000, 3,
+        self.assertTrue(NiaPy.Runner(10, 40, 1000, 3, 100,
                                      self.algorithms, self.benchmarks).run())

@@ -1,3 +1,5 @@
+# encoding=utf8
+# pylint: disable=too-many-function-args
 """Python micro framework for building nature-inspired algorithms."""
 
 from __future__ import print_function  # for backward compatibility purpose
@@ -21,7 +23,7 @@ logger = logging.getLogger('NiaPy')
 logger.setLevel('INFO')
 
 
-class Runner(object):
+class Runner():
     r"""Runner utility feature.
 
     Feature which enables running multiple algorithms with multiple benchmarks.
@@ -29,7 +31,11 @@ class Runner(object):
 
     """
 
-    def __init__(self, D, NP, nFES, nRuns, useAlgorithms, useBenchmarks, A=0.5, r=0.5, Qmin=0.0, Qmax=2.0, Pa=0.25, F=0.5, CR=0.9, alpha=0.5, betamin=0.2, gamma=1.0, p=0.5, Ts=4, Mr=0.05, C1=2.0, C2=2.0, w=0.7, vMin=-4, vMax=4, Tao=0.1, omega=0.25, mu=0.5, n=10, S_init=10, E_init=10, T_min=-10, T_max=10, C_a=2, C_r=0.5):
+    def __init__(self, D, NP, nFES, nRuns, useAlgorithms, useBenchmarks, nGEN,
+                 A=0.5, r=0.5, Qmin=0.0, Qmax=2.0, Pa=0.25, F=0.5, CR=0.9,
+                 alpha=0.5, betamin=0.2, gamma=1.0, p=0.5, Ts=4, Mr=0.05,
+                 C1=2.0, C2=2.0, w=0.7, vMin=-4, vMax=4, Tao=0.1, omega=0.25,
+                 mu=0.5, n=10, S_init=10, E_init=10, T_min=-10, T_max=10, C_a=2, C_r=0.5):
         r"""Initialize Runner.
 
         **__init__(self, D, NP, nFES, nRuns, useAlgorithms, useBenchmarks, ...)**
@@ -40,6 +46,8 @@ class Runner(object):
             NP {integer} -- population size
 
             nFES {integer} -- number of function evaluations
+
+            nGEN {integer} -- TODO
 
             nRuns {integer} -- number of repetitions
 
@@ -108,6 +116,7 @@ class Runner(object):
         self.D = D
         self.NP = NP
         self.nFES = nFES
+        self.nGEN = nGEN
         self.nRuns = nRuns
         self.useAlgorithms = useAlgorithms
         self.useBenchmarks = useBenchmarks
@@ -132,6 +141,7 @@ class Runner(object):
         self.Tao = Tao
         self.omega = omega
         self.mu = mu
+        self.n = n
         self.E_init = E_init
         self.S_init = S_init
         self.T_min = T_min
@@ -145,29 +155,41 @@ class Runner(object):
         algorithm = None
 
         if name == 'BatAlgorithm':
-            algorithm = algorithms.basic.BatAlgorithm(self.D, self.NP, self.nFES, self.A, self.r, self.Qmin, self.Qmax, bench)
+            algorithm = algorithms.basic.BatAlgorithm(
+                self.D, self.NP, self.nFES, self.A, self.r, self.Qmin, self.Qmax, bench)
         elif name == 'DifferentialEvolutionAlgorithm':
-            algorithm = algorithms.basic.DifferentialEvolutionAlgorithm(self.D, self.NP, self.nFES, self.F, self.CR, bench)
+            algorithm = algorithms.basic.DifferentialEvolutionAlgorithm(
+                self.D, self.NP, self.nFES, self.F, self.CR, bench)
         elif name == 'FireflyAlgorithm':
-            algorithm = algorithms.basic.FireflyAlgorithm(self.D, self.NP, self.nFES, self.alpha, self.betamin, self.gamma, bench)
+            algorithm = algorithms.basic.FireflyAlgorithm(
+                self.D, self.NP, self.nFES, self.alpha, self.betamin, self.gamma, bench)
         elif name == 'FlowerPollinationAlgorithm':
-            algorithm = algorithms.basic.FlowerPollinationAlgorithm(self.D, self.NP, self.nFES, self.p, bench)
+            algorithm = algorithms.basic.FlowerPollinationAlgorithm(
+                self.D, self.NP, self.nFES, self.p, bench)
         elif name == 'GreyWolfOptimizer':
-            algorithm = algorithms.basic.GreyWolfOptimizer(self.D, self.NP, self.nFES, bench)
+            algorithm = algorithms.basic.GreyWolfOptimizer(
+                self.D, self.NP, self.nFES, bench)
         elif name == 'ArtificialBeeColonyAlgorithm':
-            algorithm = algorithms.basic.ArtificialBeeColonyAlgorithm(self.D, self.NP, self.nFES, bench)
+            algorithm = algorithms.basic.ArtificialBeeColonyAlgorithm(
+                self.D, self.NP, self.nFES, bench)
         elif name == 'GeneticAlgorithm':
-            algorithm = algorithms.basic.GeneticAlgorithm(self.D, self.NP, self.nFES, self.Ts, self.Mr, self.gamma, bench)
+            algorithm = algorithms.basic.GeneticAlgorithm(
+                self.D, self.NP, self.nFES, self.Ts, self.Mr, self.gamma, bench)
         elif name == 'ParticleSwarmAlgorithm':
-            algorithm = algorithms.basic.ParticleSwarmAlgorithm(self.D, self.NP, self.nFES, self.C1, self.C2, self.w, self.vMin, self.vMax, bench)
+            algorithm = algorithms.basic.ParticleSwarmAlgorithm(
+                self.D, self.NP, self.nFES, self.C1, self.C2, self.w, self.vMin, self.vMax, bench)
         elif name == 'HybridBatAlgorithm':
-            algorithm = algorithms.modified.HybridBatAlgorithm(self.D, self.NP, self.nFES, self.A, self.r, self.F, self.CR, self.Qmin, self.Qmax, bench)
+            algorithm = algorithms.modified.HybridBatAlgorithm(
+                self.D, self.NP, self.nFES, self.A, self.r, self.F, self.CR, self.Qmin, self.Qmax, bench)
         elif name == 'SelfAdaptiveDifferentialEvolutionAlgorithm':
-            algorithm = algorithms.modified.SelfAdaptiveDifferentialEvolutionAlgorithm(self.D, self.NP, self.nFES, self.F, self.CR, self.Tao, bench)
+            algorithm = algorithms.modified.SelfAdaptiveDifferentialEvolutionAlgorithm(
+                self.D, self.NP, self.nFES, self.F, self.CR, self.Tao, bench)
         elif name == 'CamelAlgorithm':
-            algorithm = algorithms.basic.CamelAlgorithm(self.NP, self.D, self.nGEN, self.nFES, self.omega, self.mu, self.alpha, self.S_init, self.E_init, self.T_min, self.T_max, bench)
+            algorithm = algorithms.basic.CamelAlgorithm(
+                self.NP, self.D, self.nGEN, self.nFES, self.omega, self.mu, self.alpha, self.S_init, self.E_init, self.T_min, self.T_max, bench)
         elif name == 'BareBonesFireworksAlgorithm':
-            algorithm = algorithm.basic.BareBonesFireworksAlgorithm(self.D, self.nFES, self.n, self.C_a, self.C_r, bench)
+            algorithm = algorithm.basic.BareBonesFireworksAlgorithm(
+                self.D, self.nFES, self.n, self.C_a, self.C_r, bench)
         else:
             raise TypeError('Passed benchmark is not defined!')
 
